@@ -1,3 +1,5 @@
+//go:build ignore
+
 // -------------------- Description ---------------------------
 /*
 Given a binary tree, return the product of the largest value in each level of the tree.
@@ -19,27 +21,36 @@ Example solution: 1- * 4 * 12 * 24 * 12 = 138,240
 // ---------- Explain and verify that that's ok --------------
 /*
 BFS (horizontal scan) with a queue to keep track of the largest
-value of each level. At the end of each level we multiply the value with a running product. 
+value of each level. At the end of each level we multiply the value with a running product.
 */
+package main
+
+import "fmt"
 
 type node struct {
 	level int64
-	val int64
-	left *node
+	val   int64
+	left  *node
 	right *node
 }
 
-var root = *node{level: 0}
+var root = &node{level: 0}
 var maxVals []int64
-var prod = 1
+var prod = int64(1)
 
 func bfs(node *node) (max int64) {
+	var maxL, maxR int64
 
-	if node.right =! nil {
-		maxR := TreeProduct(node.right)
+	if node == root {
+		maxVals = append(maxVals, node.val)
+		prod *= node.val
+	}
+
+	if node.right != nil {
+		maxR = TreeProduct(node.right)
 	}
 	if node.left != nil {
-		maxL := TreeProduct(node.left)
+		maxL = TreeProduct(node.left)
 	}
 	if node.right == nil && node.left == nil {
 		// We're on a leaf.
@@ -52,13 +63,8 @@ func bfs(node *node) (max int64) {
 	} else {
 		max = maxR
 	}
-	maxVals[node.level+1] = max
+	maxVals = append(maxVals, max)
 	prod *= max
-
-	if node == root {
-		maxVals[0] = node.val
-		prod *= node.val
-	}
 
 	return
 }
@@ -73,11 +79,22 @@ func TreeProduct(root *node) (product int64) {
 func printEquation() {
 	eq := fmt.Sprintf("%d * ", maxVals[0])
 
-	for val := range maxVals[1::] {
+	for val := range maxVals[1:] {
 		eq = fmt.Sprintf("%s * %d", eq, val)
 	}
 
 	eq = fmt.Sprintf("%s = %d", eq, prod)
 
 	fmt.Println(eq)
+}
+
+func main() {
+	root.val = 1
+	root.left = &node{level: 1, val: 4}
+	root.right = &node{level: 1, val: 12}
+	root.left.left = &node{level: 2, val: 24}
+	root.left.right = &node{level: 2, val: 12}
+
+	TreeProduct(root)
+	printEquation()
 }
