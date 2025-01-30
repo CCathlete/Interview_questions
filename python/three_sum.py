@@ -13,6 +13,7 @@
     5. We want to skip duplicates, so we'll skip the current value we're scanning if it's the same as the previous one.
 """
 
+
 # A helper function that sorts the array Prior to our run.
 def sort_array(arr: list[int]) -> list[int]:
     """Scans the array, putting the smallest number in the i'th position.
@@ -29,55 +30,74 @@ def sort_array(arr: list[int]) -> list[int]:
         for j in range(len(arr)):
             if arr[i] < arr[j]:
                 arr[i], arr[j] = arr[j], arr[i]
-    
+
     return arr
 
+
 def three_sum(arr: list[int]) -> list[list[int]]:
-   pass 
+    triplets: list[list[int]] = []
+    triplet_index: int = 0
+
+    for i in range(len(arr)):
+        current_num: int = arr[i]
+        # If we've encountered the same number as the current_num we skip.
+        if i > 0 and current_num == arr[i - 1]:
+            continue
+
+        # The unexplored section of arr.
+        sub_array: list[int] = arr[i + 1 :]
+
+        for j in range(len(sub_array)):
+            from_start: int = sub_array[j]
+            from_end: int = sub_array[-j]
+            if current_num + from_start + from_end == 0:
+                triplets.append([current_num, from_start, from_end])
+                triplet_index += 1
+
+    return triplets
+
 
 class Test_case:
     name: str
     arr: list[int]
 
-    def __init__(self, name: str, arr: list[int]):
-       self.name = name
-       self.arr = arr 
+    def __init__(self, name: str, arr: list[int]) -> None:
+        self.name = name
+        self.arr = arr
 
 
-def main():
+def main() -> None:
     test_cases: list[Test_case] = [
         Test_case(
             "Happy case: One triplet without any repetitions.",
-            arr = [3, -1, 0, 1, 4],
+            arr=[3, -1, 0, 1, 4],
         ),
         Test_case(
             "Case 1: one triplet, repeating numbers.",
-            arr = [0, 1, -1, 3, 1],
+            arr=[0, 1, -1, 3, 1],
         ),
         Test_case(
             "Case 2: two triplets, repeating numbers.",
-            arr = [0, 1, -1, 3, 1],
+            arr=[0, 1, -1, 3, 1],
         ),
         Test_case(
             "Edge case 1: Empty list.",
-            arr = [],
+            arr=[],
         ),
         Test_case(
             "Edge case 2: No triplets.",
-            arr = [1, 2, 3, 4, 5],
+            arr=[1, 2, 3, 4, 5],
         ),
         Test_case(
             "Edge case 3: No triplets, one zero.",
-            arr = [0, 2, 3, 4, 5],
-        )
+            arr=[0, 2, 3, 4, 5],
+        ),
     ]
 
     for test_case in test_cases:
         print(f"Running test case: {test_case.name}")
         print(f"Array: {test_case.arr}")
         print(f"Result: {three_sum(sort_array(test_case.arr))}")
-
-
 
 
 if __name__ == "main":
