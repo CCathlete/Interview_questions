@@ -36,9 +36,8 @@ def sort_array(arr: list[int]) -> list[int]:
 
 def three_sum(arr: list[int]) -> list[list[int]]:
     triplets: list[list[int]] = []
-    triplet_index: int = 0
 
-    for i in range(len(arr)):
+    for i in range(len(arr) - 2):
         current_num: int = arr[i]
         # If we've encountered the same number as the current_num we skip.
         if i > 0 and current_num == arr[i - 1]:
@@ -47,12 +46,29 @@ def three_sum(arr: list[int]) -> list[list[int]]:
         # The unexplored section of arr.
         sub_array: list[int] = arr[i + 1 :]
 
-        for j in range(len(sub_array)):
-            from_start: int = sub_array[j]
-            from_end: int = sub_array[-j]
-            if current_num + from_start + from_end == 0:
+        from_start: int = sub_array[0]
+        from_end: int = sub_array[-1]
+        sum: int = current_num + from_start + from_end
+
+        # The array is sorted, so if both values are equal everything in between is equal or they are at the same index.
+        while from_start != from_end:
+            if sum < 0:
+                from_start += 1
+            elif sum > 0:
+                from_end -= 1
+            elif sum == 0:
                 triplets.append([current_num, from_start, from_end])
-                triplet_index += 1
+                # TODO: Understand this.
+                while (
+                    from_start < from_end
+                    and sub_array[from_start] == sub_array[from_start + 1]
+                ):
+                    from_start += 1
+                while (
+                    from_end < from_end
+                    and sub_array[from_end] == sub_array[from_end - 1]
+                ):
+                    from_end -= 1
 
     return triplets
 
