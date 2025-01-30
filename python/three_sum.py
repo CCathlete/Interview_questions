@@ -47,7 +47,7 @@ class Test_case:
 def main():
     test_cases: list[Test_case] = [
         Test_case(
-            "Happy case: One triplet without any repititions.",
+            "Happy case: One triplet without any repetitions.",
             arr = [3, -1, 0, 1, 4],
         ),
         Test_case(
