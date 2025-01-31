@@ -58,9 +58,20 @@ def bubble_sort(arr: list[int]) -> list[int]:
 
 
 def two_sum(arr: list[int], target: int) -> list[int]:
-    couple: list[int] = []
+    index_couple: list[int] = []
+    left_index: int = 0
+    right_index: int = len(arr) - 1
 
-    return couple
+    while left_index != right_index:
+        sum: int = arr[left_index] + arr[right_index]
+        if sum < target:  # We need to move to the right.
+            left_index += 1
+        elif sum > target:  # We need to move to the left.
+            right_index -= 1
+        else:  # sum == target
+            return [left_index, right_index]
+
+    raise ValueError("No couple of numbers in the array sums up to the target.")
 
 
 # ---------------------------- Test cases ------------------------------
