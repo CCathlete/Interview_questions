@@ -6,7 +6,7 @@
 
     2. We'll use a sorted array to reduce the number of scans required, reducing the complexity.
 
-    3. We'll scan the array from both directions to reduce the number of loops (multiple pointers approach).
+    3. We'll scan the array from both directions to reduce the number of loops (multiple reference approach).
 
     4. Since the array is sorted, we know that as we progress we've collected all possible triplets.
 
@@ -39,7 +39,7 @@ def three_sum(arr: list[int]) -> list[list[int]]:
 
     for i in range(len(arr) - 2):
         current_num: int = arr[i]
-        # If we've encountered the same number as the current_num we skip.
+        # Handling duplicates for the first reference (i).
         if i > 0 and current_num == arr[i - 1]:
             continue
 
@@ -58,16 +58,20 @@ def three_sum(arr: list[int]) -> list[list[int]]:
                 from_end -= 1
             elif sum == 0:
                 triplets.append([current_num, from_start, from_end])
-                # TODO: Understand this.
+                # Handling duplicates for the second reference (from_start).
                 while (
                     from_start < from_end
                     and sub_array[from_start] == sub_array[from_start + 1]
                 ):
+                    # If we added from_start to a triplet, we want to skip all other steps that has that values in them. Since the array is sorted, all values of from_start are adjacent.
                     from_start += 1
+
+                # Handling duplicates for the third reference (from_end).
                 while (
                     from_end < from_end
                     and sub_array[from_end] == sub_array[from_end - 1]
                 ):
+                    # Similar to the previous while loop, we want to skip all other steps that has that values in them.
                     from_end -= 1
 
     return triplets
