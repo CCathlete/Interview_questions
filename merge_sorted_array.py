@@ -96,10 +96,27 @@ def enforce_type(arr1: list[int], arr2: list) -> tuple[list[int], list[int]]:
 # -------------------- Implementation ------------------------
 
 
+# Merges two sorted ascending arrays in-place into the first array. The merged array is also ascending.
 def merge_arrays(
     arr1: list[int],
     arr2: list[int],
+    n: int,
+    m: int,
 ) -> list[int]:
+
+    i: int = n - 1 if n > 0 else 0
+    j: int = m - 1 if m > 0 else 0
+    k: int = n + m - 1 if n + m > 0 else 0
+    arr1 += [0] * (m)  # Padding arr1 with zeros to the right.
+
+    while j >= 0:
+        if arr1[i] > arr2[j]:
+            arr1[k] = arr1[i]
+            i -= 1
+        else:
+            arr1[k] = arr2[j]
+            j -= 1
+        k -= 1
 
     return arr1
 
@@ -136,18 +153,38 @@ class Test_Case:
 def main() -> None:
     test_cases: list[Test_Case] = [
         Test_Case(
-            name="Happy Case",
+            name="Happy Case.",
             arr1=[1, 2, 3, 5, 10],
             arr2=[1, 3, 7, 15],
             expected_result=[1, 1, 2, 3, 3, 5, 7, 10, 15],
         ),
+        Test_Case(
+            name="arr1 shorter than arr2.",
+            arr1=[1, 2],
+            arr2=[1, 3, 3, 5, 7, 10, 15],
+            expected_result=[1, 1, 2, 3, 3, 5, 7, 10, 15],
+        ),
+        Test_Case(
+            name="arr1 is empty.",
+            arr1=[],
+            arr2=[1, 3, 7, 15],
+            expected_result=[1, 3, 7, 15],
+        ),
     ]
 
     for test_case in test_cases:
+        print(f"Running test case: {test_case.name}")
         print(f"arr1: {test_case.arr1}")
         print(f"arr2: {test_case.arr2}")
         print(f"expected_result: {test_case.expected_result}")
-        print(f"result: {merge_arrays(test_case.arr1, test_case.arr2)}")
+        print(
+            f"result: {merge_arrays(
+                test_case.arr1,
+                test_case.arr2,
+                test_case.arr1_len,
+                test_case.arr2_len,
+                )}",
+        )
 
 
 if __name__ == "__main__":
