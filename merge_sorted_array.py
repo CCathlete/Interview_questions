@@ -18,10 +18,52 @@
 4. Example + approach:
         arr1=[1, 2, 3, 5, 10], m = 5
         arr2=[1, 3, 7, 15], n = 4
-    We're going to replace the last element in arr1 with the closest SMALLER element in arr2.
-    Then, we're going to append the number we took out of arr1.
-        arr1=[1, 2, 3, 5, 7, 10]
+    - We'll pad with zeros the first array to length of m + n.
+    - We'll modify the new arr1 starting from the end.
+    - We'll use three pointers:
+        - i: starts at the last element of the original arr1
+            (n-1) and moves to the left when the value it points to is moved to the right.
+        - j: starts at the last element of the original arr2
+            (m-1) and moves to the left.
+        - k: starts at the last element of the new arr1
+            (n+m-1) and moves to left at every iteration.
+        -->
+        arr1 = [1,2,3,5,(i)10, 0, 0, 0, (k)0]
+        arr2 = [1, 3, 7, (j)15]
 
+        --> 15 >= 10; j -= 1, k -= 1
+        arr1 = [1, 2, 3, 5, (i)10, 0, 0, (k)0, 15]
+        arr2 = [1, 3, (j)7, 15]
+
+        --> 7 < 10; i -= 1, k -= 1
+        arr1 = [1, 2, 3, (i)5, 10, 0, (k)0, 10, 15]
+        arr2 = [1, 3, (j)7, 15]
+
+        --> 7 >= 5; j -= 1, k -= 1
+        arr1 = [1, 2, 3, (i)5, 10, (k)0, 7, 10, 15]
+        arr2 = [1, (j)3, 7, 15]
+
+        --> 3 < 5; i -= 1, k -= 1
+        arr1 = [1, 2, (i)3, 5, (k)10, 5, 7, 10, 15] 
+        arr2 = [1, (j)3, 7, 15]
+
+        --> 3 >= 3; j -= 1, k -= 1
+        arr1 = [1, 2, (i)3, (k)5, 3, 5, 7, 10, 15]
+        arr2 = [(j)1, 3, 7, 15]
+
+        --> 1 < 3; i -= 1, k -= 1
+        arr1 = [1, (i)2, (k)3, 3, 3, 5, 7, 10, 15]
+        arr2 = [(j)1, 3, 7, 15]
+
+        --> 1 < 2; i -= 1, k -= 1
+        arr1 = [(i)1, (k)2, 2, 3, 3, 5, 7, 10, 15]
+        arr2 = [(j)1, 3, 7, 15]
+        
+        --> 1 >= 1; j -= 1, k -= 1
+        arr1 = [(1, k)1, 1, 2, 3, 3, 5, 7, 10, 15]
+        arr2 = (j)[1, 3, 7, 15]
+
+        --> Done.
 """
 
 # ------------------ Data normalisation ----------------------
