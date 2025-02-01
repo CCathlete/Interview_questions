@@ -12,7 +12,7 @@
         - If we encounter a duplicaate we'll move one step to the right/left accorging to the reference we're moving.
 """
 
-# -------------------------- Helper functions --------------------------
+# -------------------------- Helper functions ----------------
 
 
 def bubble_sort(arr: list[int]) -> list[int]:

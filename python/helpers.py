@@ -35,3 +35,18 @@ def bubble_sort(arr: list[int]) -> list[int]:
                 arr[j], arr[j + 1] = arr[j + 1], arr[j]
 
     return arr
+
+
+def enforce_type(arr1: list[int], arr2: list) -> tuple[list[int], list[int]]:
+
+    if type(arr1[0]) != type(arr2[0]):
+        if type(arr1[0]) == int:
+            arr2 = [int(x) for x in arr2]
+        elif type(arr1[0]) == float:
+            arr2 = [float(x) for x in arr2]
+        elif type(arr1[0]) == str:
+            arr2 = [str(x) for x in arr2]
+        else:
+            raise ValueError("Unsupported type.")
+
+    return arr1, arr2
