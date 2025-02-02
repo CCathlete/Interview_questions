@@ -7,7 +7,7 @@
 
 2. Complexity analysis:
     - Time: O(n)
-    - Space: O(n) (if we're not padding arr1 ahead of time)
+    - Space: O(n + m) (if we're not padding arr1 ahead of time, we're creating new cells depending on the length of the second array and appending to the first arry so we're also recreating it)
 
 3. Follow-up questions:
     - What if the arrays are not sorted?

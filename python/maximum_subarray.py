@@ -6,12 +6,12 @@
     - We return the sum of that subarray.
 
 2. Complexity Analysis:
-    - Time:
-    - Space:
+    - Time: O(n)
+    - Space: O(1)
     
 3. Follow up questions:
-    - Is the array sorted?
-        - No. 
+    - Is the array sorted? Should I sort if not?
+        - No need for soring it's ok. 
     - What should I return if the array is empty?
         - Return 0.
     - Should the sum be in absolute value?
@@ -20,6 +20,16 @@
         - Raise an error.
 
 4. Example + Approach:
+    - We're treating the subarray as a sliding window.
+    - We'll increase the window size as long as the sum of values in the window still increases after adding the next number. If it doesn't increase, it means that it's not the max sum since the next number itself is bigger. In this case we're resetting the window starting from the next number.
+    --> i = 0
+    nums = [(i)1, 5, 0, 9], max_sum = 1
+    --> i = 1
+    nums = [1, (i)5, 0, 9], max_sum = 6
+    --> i = 2
+    nums = [1, 5, (i)0, 9], max_sum = 6
+    --> i = 3
+    nums = [1, 5, 0, (i)9], max_sum = 15
 """
 
 # ------------------ Normalisation ---------------------------
@@ -34,11 +44,23 @@ def bubble_sort(arr: list[int]) -> list[int]:
     return arr
 
 
+def validate_type(arr: list) -> None:
+    if isinstance(type(arr[0]), int):
+        raise ValueError("Array must be ot integers.")
+
+
 # ------------------ Implementation --------------------------
 
 
 def max_subarray(nums: list[int]) -> int:
-    pass
+    validate_type(nums)
+    max_sum: int = 0
+    for num in nums:
+        max_sum_will_decrease: bool = max_sum + num < num
+
+        max_sum = num if max_sum_will_decrease else max_sum + num
+
+    return max_sum
 
 
 # ------------------ Test cases ------------------------------
@@ -67,19 +89,22 @@ def main() -> None:
     test_cases: list[Test_Case] = [
         Test_Case(
             name="Happy case.",
-            nums=[1, 5, 9, 0],
-            expected_result=15,
+            nums=[1, -5, 9, 0],
+            expected_result=9,
         ),
     ]
 
     for test_case in test_cases:
         print(f"\nRunning test case: {test_case.name}")
         print(f"nums: {test_case.nums}")
-        print(f"Expexted result: {test_case.expected_result}")
+        print(f"Expected result: {test_case.expected_result}")
+        print(f"{'=' * 100}")
+        print(f"Sorted array: {bubble_sort(test_case.nums)}")
+        print(f"{'=' * 100}")
         print(
             f"Result: {max_subarray(
-            bubble_sort(test_case.nums)),
-            }",
+            test_case.nums,
+            )}",
         )
 
 
