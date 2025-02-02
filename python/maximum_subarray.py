@@ -35,15 +35,6 @@
 # ------------------ Normalisation ---------------------------
 
 
-def bubble_sort(arr: list[int]) -> list[int]:
-    for i in range(len(arr)):
-        for j in range(len(arr) - i - 1):
-            if arr[j] > arr[j + 1]:
-                arr[j], arr[j + 1] = arr[j + 1], arr[j]
-
-    return arr
-
-
 def validate_type(arr: list) -> None:
     if isinstance(type(arr[0]), int):
         raise ValueError("Array must be ot integers.")
@@ -98,9 +89,6 @@ def main() -> None:
         print(f"\nRunning test case: {test_case.name}")
         print(f"nums: {test_case.nums}")
         print(f"Expected result: {test_case.expected_result}")
-        print(f"{'=' * 100}")
-        print(f"Sorted array: {bubble_sort(test_case.nums)}")
-        print(f"{'=' * 100}")
         print(
             f"Result: {max_subarray(
             test_case.nums,
