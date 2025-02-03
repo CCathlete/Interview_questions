@@ -20,6 +20,9 @@
         - Yes.
 
 4. Example + Approach:
+    - We'll scan the grid for unexplored pieces of land.
+    - Once found, we'll use the point as a starting point for dfs that will run through all pieces of land connected to the initial piece and mark them as visited.
+    - That way, we'll run dfs only one per island, so we can add 1 to the counter every dfs run.
 """
 
 from typing import Callable
