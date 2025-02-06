@@ -9,7 +9,7 @@ the outcome of [1,4,6,20,3,7] will be 7
 
 2. Complexity:
 	- Time: O(n).
-    - Space: O(1) (check).
+    - Space: O(1).
 
 3. Follow up Q:
 	- Input check: only that nums != []
