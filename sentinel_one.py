@@ -1,5 +1,7 @@
-""" Write a function that finds the second largest number in a given unsorted array in the most efficient way. What is the efficiency of your solution? For example,
- the outcome of [1,4,6,20,3,7] will be 7
+""" Write a function that finds the second largest number in a
+given unsorted array in the most efficient way. What is the
+efficiency of your solution? For example,
+the outcome of [1,4,6,20,3,7] will be 7
 
 1. Rephrasing:
 	- We're given an array nums (unsorted), we want to find 
@@ -31,22 +33,22 @@ def second_largest(nums: list[int]) -> int:
     n: int = len(nums)
     left: int = 0
     right: int = n - 1
-    max: int = nums[0]
+    first_max: int = nums[0]
     second_max: int = nums[0]
 
     while left < right:
         if nums[left] <= nums[right]:
             left += 1
-        if nums[right] >= max:
-            max = nums[right]
+        if nums[right] >= first_max:
+            first_max = nums[right]
         else:
             if nums[right] >= second_max:
                 second_max = nums[right]
 
         if nums[left] >= nums[right]:
             right -= 1
-        if nums[left] >= max:
-            max = nums[left]
+        if nums[left] >= first_max:
+            first_max = nums[left]
         else:
             if nums[left] >= second_max:
                 second_max = nums[left]
