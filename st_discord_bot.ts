@@ -1,5 +1,11 @@
-import { Client, GatewayIntentBits, GuildMember, VoiceState, Role } from 'discord.js';
-import { get } from 'lodash';
+import {
+  Client,
+  GatewayIntentBits,
+  GuildMember,
+  VoiceState,
+  Role,
+  Guild,
+} from "discord.js";
 
 const bot = new Client({
   intents: [
@@ -9,27 +15,30 @@ const bot = new Client({
   ],
 });
 
-bot.once('ready', () => {
+bot.once("ready", () => {
   console.log(`${bot.user?.tag} is ready!`);
   console.log(bot.guilds.cache);
 });
 
-bot.on('voiceStateUpdate', async (member: GuildMember, before: VoiceState, after: VoiceState) => {
-  if (member.user.bot) return;
+bot.on("voiceStateUpdate", async (before: VoiceState, after: VoiceState) => {
+  const guild: Guild = after.guild || before.guild;
+  const member: GuildMember | undefined =
+    guild.members.cache.get(after.id) || guild.members.cache.get(before.id);
 
-  const guild = member.guild;
+  // If member is undefined or a bot we exit the function.
+  if (!member || member.user.bot) return;
 
   const roleName = "studying";
   const channelIds = [1234, 5678];
 
-  if (after.channel && channelIds.includes(after.channel.id)) {
+  if (after.channel && channelIds.includes(Number(after.channel.id))) {
     const role = guild.roles.cache.find((r) => r.name === roleName);
     if (role) {
       await member.roles.add(role, "User joined studying voice channel");
     }
   }
 
-  if (before.channel && channelIds.includes(before.channel.id)) {
+  if (before.channel && channelIds.includes(Number(before.channel.id))) {
     const role = guild.roles.cache.find((r) => r.name === roleName);
     if (role) {
       await member.roles.remove(role, "User left studying voice channel");
@@ -37,4 +46,4 @@ bot.on('voiceStateUpdate', async (member: GuildMember, before: VoiceState, after
   }
 });
 
-bot.login('someKey');
+bot.login("someKey");
