@@ -21,7 +21,9 @@ bot.once("ready", () => {
 });
 
 bot.on("voiceStateUpdate", async (before: VoiceState, after: VoiceState) => {
-  const guild: Guild = after.guild || before.guild;
+  const guild: Guild | null = after.guild ?? before.guild;
+  if (!guild) return;
+
   const member: GuildMember | undefined =
     guild.members.cache.get(after.id) || guild.members.cache.get(before.id);
 
@@ -32,14 +34,18 @@ bot.on("voiceStateUpdate", async (before: VoiceState, after: VoiceState) => {
   const channelIds = [1234, 5678];
 
   if (after.channel && channelIds.includes(Number(after.channel.id))) {
-    const role = guild.roles.cache.find((r) => r.name === roleName);
+    const role: Role | undefined = guild.roles.cache.find(
+      (r) => r.name === roleName
+    );
     if (role) {
       await member.roles.add(role, "User joined studying voice channel");
     }
   }
 
   if (before.channel && channelIds.includes(Number(before.channel.id))) {
-    const role = guild.roles.cache.find((r) => r.name === roleName);
+    const role: Role | undefined = guild.roles.cache.find(
+      (r) => r.name === roleName
+    );
     if (role) {
       await member.roles.remove(role, "User left studying voice channel");
     }
