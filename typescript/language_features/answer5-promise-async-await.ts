@@ -44,9 +44,9 @@ class PromiseExample<T> {
     this.state = "pending";
     this.value = null;
     this.reason = null;
-    this.resolve = this.resolve.bind(this);
-    this.reject = this.reject.bind(this);
-    this.then = this.then.bind(this);
+    // this.resolve = this.resolve.bind(this);
+    // this.reject = this.reject.bind(this);
+    // this.then = this.then.bind(this);
 
     try {
       executor(this.resolve, this.reject);
@@ -55,7 +55,7 @@ class PromiseExample<T> {
     }
   }
 
-  private resolve(value: T): void {
+  private resolve = (value: T): void => {
     if (this.state === "pending") {
       this.state = "fulfilled";
       this.value = value;
@@ -64,9 +64,9 @@ class PromiseExample<T> {
         callback(value)
       );
     }
-  }
+  };
 
-  private reject(reason: any): void {
+  private reject = (reason: any): void => {
     if (this.state === "pending") {
       this.state = "rejected";
       this.reason = reason;
@@ -75,12 +75,12 @@ class PromiseExample<T> {
         callback(reason)
       );
     }
-  }
+  };
 
   // When this is triggered the constructor is called with the executor we
   // define.
   // A new promise is returned to allow async promise chaining (?).
-  public then(onFulfilled: (value: T) => void): PromiseExample<T> {
+  public then = (onFulfilled: (value: T) => void): PromiseExample<T> => {
     return new PromiseExample<T>((resolve): void => {
       if (this.state === "fulfilled" && this.value !== null) {
         onFulfilled(this.value);
@@ -89,7 +89,7 @@ class PromiseExample<T> {
         this.thenCallbacks.push(onFulfilled);
       }
     });
-  }
+  };
   public catch(onRejected: (reason: unknown) => void): PromiseExample<T> {
     return new PromiseExample<T>((_, reject) => {
       if (this.state === "rejected" && this.reason !== undefined) {
