@@ -16,9 +16,10 @@
  * the component has the ability to change them using a set function
  * that is created when a variable is registered as a state variable
  * Local states are modified by the component itself.
- * Global state is state information that is managed by a global
- * function (from libraries like Redux or Context API).
  *
+ * Global state is state information that is held in a global
+ * element that can be used by all other components so it holds a
+ * global state that can be shared.
  */
 
 import React, { useCallback, useEffect, useState } from "react";
@@ -68,11 +69,62 @@ const SecondComponent = (): React.ReactNode =>
   );
 };
 
-App = (): React.ReactNode =>
+export default App = (): React.ReactNode =>
 {
   return (
     <SecondComponent />
   );
 };
 
-export default App;
+/**
+ * Global state example:
+ * Use cases - user authentication, shared themes, etc.
+ */
+
+interface User
+{
+  name: string;
+}
+
+interface UserContext
+{
+  user: User;
+  setUser: CallableFunction;
+}
+
+// Using a context.
+const context = React.createContext<UserContext>(
+  // Default value.
+  { user: { name: "Ken" }, setUser: () => { } }
+);
+
+
+const ChildComponent = (): React.ReactNode =>
+{
+  // Extracting information from the context.
+  const extractedCtx: UserContext = React.useContext( context );
+  const handleClick = (): void =>
+  {
+    console.log( `Before: ${extractedCtx.user}` );
+    extractedCtx.setUser( { name: "Sima" } );
+    console.log( `After: ${extractedCtx.user}` );
+  };
+
+  return (
+    <div>
+      <p> Name before: { extractedCtx.user.name } </p>
+      <button onClick={ handleClick }> Change name </button>
+      <p> Name after: { extractedCtx.user.name } </p>
+    </div>
+  );
+};
+
+App = (): React.ReactNode =>
+{
+  const [user, setUser] = useState( { name: "Udi" } );
+  return (
+    <context.Provider value={ { user, setUser } }>
+      <ChildComponent />
+    </context.Provider>
+  );
+};
