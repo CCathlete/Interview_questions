@@ -55,7 +55,7 @@ const SecondComponent = (): React.ReactNode =>
 {
   const [count, setCount] = useState( 0 );
 
-  const increment = useEffect(
+  useEffect(
     (): void => setCount( count + 1 ), []
   );
 
