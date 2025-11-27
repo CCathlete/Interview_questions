@@ -16,23 +16,63 @@ Design the end-to-end architecture to meet the following requirements:
 
 1.  **Ingestion:** Must handle a mix of high-volume, continuous streams (click data) and daily batched loads (purchase data).
 
-Q: What are my sources of these two types of data? How can I pull data from them?
-A: The source of the streaming data is a data broker tool like apache kafka or rabbit mq. If the source is apache kafka all we need is a kafka stream manager connector. If the stream broker uses a different protocol (like rabbit mq does) we would need to connect it to a kafka adapter and then sream the data into a pyspark dataframe we would then 'sink' into s3.
 
 2.  **Processing:** Must use **AWS data integration and processing technologies (Glue, Athena, Redshift)** and **Spark**. The pipeline must ensure data is **de-duplicated** and joined before loading.
-Q: Do you mean Spark the ETL tool? What is the use of Glue?
 
 
 3.  **Storage:** Implement a **Lakehouse architecture** using **Amazon S3** as the foundational Data Lake storage.
 
-Q: what other data do I get from each source? Geographical are and timestamp/ date? Is there a specific preference for a file type such as csv/ json?
-
 
 4.  **Consumption:** The final, aggregated attribution table must reside in **Amazon Redshift** for fast analytical querying.
 
-Q: Are all aws components located in the same environment? Do I have any authentication I need to do during the ETL flow?
 
 ### Task 1.1: Component Selection and Flow
+
+---------------------------------- OVERVIEW ------------------------------------
+
+
+The source of the streaming data is a data broker tool like apache kafka or rabbit mq. If the source is apache kafka all we need is a kafka stream manager connector. If the stream broker uses a different protocol (like rabbit mq does) we would need to connect it to a kafka adapter and then stream the data into a pyspark dataframe we would then 'sink' into s3.
+
+Glue is Amazon's ETL tool that is built on top of Apache Spark. It creates the environment to operate pyspark scripts as jobs.
+
+Our S3 bucket would be divided into 3 layers: raw (bronze), staging (silver)
+and processed (gold).
+
+The ingestion process would include a connector to the data sources (marketing service and data broker for click streams) like AWS Firehose. This connector would be configured to load the data in it's raw format (json/yaml/csv/xml etc) into the bronze layer of the the bucket and put timestamp into the filenames.
+=> That way we would have a persistent storage for historical data.
+
+For the raw layer, we would create two separate Glue pipelines, one for daily marketing batches and the other for clicks stream data.
+
+a. For marketing batches:
+If the marketing data is stored in our database we would use a simple jdbc connection url and use a glue connector to pull the data into an S3 folder (
+  folders in s3 are basically a namespace, all files within a folder have a
+  common segment in their paths.
+)
+else, we would create a custom connector in python and import it by configuring
+the glue job. The connector would query the marketing api and would pull data for the current date and if needed also for a while back. For instance 30 days back.
+The files we pull with the connector would be in their rawest form, json, csv,
+xml, yaml etc.
+
+
+b. For click streams:
+
+For the staging layer:
+This pipeline would include a pyspark module that loads data for a specific
+date. Since we added the timestamp to the prefix (path), we can select files
+for a specific date by the prefix in their path.
+
+Assuming we want to track the behaviour of customers by their user id,
+we would use a window function to deduplicate records: We would group the data
+by user ids (email or any other identifier). Then we would order by insertion
+timestamp of records within that group in a descending order and assign a row
+number within the group and drop all records except the first row = latest.
+Finally we would sink the data (write) to an S3 bucket using pyspark's built in
+write method.
+
+2. For streaming data:
+The dedicated pyspark script would pull the stream from the data broker using Glue's Kafka connector (if the data broker is Kafka) or an adapter that connects the data broker to apache kafka and then we would connect the adapter to a kafka connector (this is done via glue).
+
+---------------------------------- OVERVIEW ------------------------------------
 
 1.  **Draw/Describe the architecture diagram.** Use specific AWS services mentioned (S3, Glue, Athena, Redshift).
 2.  **Describe the role of each service in the pipeline:**
